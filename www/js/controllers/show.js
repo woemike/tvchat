@@ -12,8 +12,8 @@ mod.controller('ShowCtrl', function ($scope,
 
 	$scope.user = UserService;
 
-	$scope.show = ShowsService.getShow(parseInt($scope.showId));
   $scope.showId = $stateParams.showId;
+  $scope.show = ShowsService.getShow(parseInt($scope.showId));
 
 	$scope.data = {
 		messages: [],
