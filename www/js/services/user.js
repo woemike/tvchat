@@ -57,10 +57,26 @@ app.service('UserService', function (FIREBASE_URL,
 			self.ensureFavorite();
 			self.current.favorites[show.showid] = null;
 		},
-		/*
-		 Checks to see if a user has already logged in in a previous session
-		 by checking localstorage, if so then loads that user up from firebase.
-		 */
+
+    registerUser: function () {
+      // kick off the platform web client
+      Ionic.io();
+      // this will give you a fresh user or the previously saved 'current user'
+      var user = Ionic.User.current();
+      // if the user doesn't have an id, you'll need to give it one.
+      if (!user.id) {
+        user.id = self.current.userId;
+        user.set('name',self.current.name);
+        user.set('image',self.current.profilePic);
+      }
+      //persist the user
+      user.save();
+    },
+
+    /*
+     Checks to see if a user has already logged in in a previous session
+     by checking localstorage, if so then loads that user up from firebase.
+     */
 		loadUser: function () {
 			var d = $q.defer();
 
@@ -78,6 +94,7 @@ app.service('UserService', function (FIREBASE_URL,
 					// When we are sure the object has been completely
 					// loaded from firebase then resolve the promise.
 					self.current = user;
+          self.registerUser();
 					d.resolve(self.current);
 				});
 			} else {
@@ -171,6 +188,7 @@ app.service('UserService', function (FIREBASE_URL,
 														$localstorage.set('tvchat-user', authData.uid);
 														self.current = $firebaseObject(usersRef.child(authData.uid));
 														self.current.$loaded(function () {
+                              self.registerUser();
 															// When we are sure the object has been completely
 															// loaded from firebase then resolve the promise.
 															d.resolve(self.current);

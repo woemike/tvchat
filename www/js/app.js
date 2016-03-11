@@ -1,8 +1,11 @@
 var app = angular.module('tvchat', [
 	'ionic',
+  'ionic.service.core',
 	'ngCordova',
 	'firebase',
 	'angularMoment',
+  'ionic.service.push',
+  'ionic.service.analytics',
 	'tvchat.controllers',
 	'tvchat.services',
 	'tvchat.filters',
@@ -12,7 +15,44 @@ var app = angular.module('tvchat', [
 
 app.constant("FIREBASE_URL", 'https://ionic-tvchat-test.firebaseio.com');
 app.constant("FACEBOOK_APP_ID", '474011059451126');
+app.constant()
 
+app.run(function ($ionicPlatform, $ionicAnalytics) {
+  $ionicPlatform.ready(function () {
+    $ionicAnalytics.register();
+  });
+});
+
+app.run(function ($ionicPlatform) {
+  $ionicPlatform.ready(function () {
+    var deploy = new Ionic.Deploy();
+    deploy.watch().then(
+      function noop() {
+      },
+      function noop() {
+      },
+      function hasUpdate(hasUpdate) {
+        console.log("Has Update ", hasUpdate);
+        if (hasUpdate) {
+          console.log("Calling ionicDeploy.update()");
+          deploy.update().then(function (deployResult) {
+          // deployResult will be true when successfull and
+          // false otherwise
+          }, function (deployUpdateError) {
+          // fired if we're unable to check for updates or if any
+          // errors have occured.
+            console.log('Ionic Deploy: Update error! ', deployUpdateError);
+          }, function (deployProgress) {
+          // this is a progress callback, so it will be called a lot
+          // deployProgress will be an Integer representing the current
+          // completion percentage.
+            console.log('Ionic Deploy: Progress... ', deployProgress);
+          });
+        }
+      }
+    );
+  });
+});
 
 app.run(function ($rootScope, $ionicPlatform, $cordovaStatusbar) {
 
