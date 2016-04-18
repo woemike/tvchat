@@ -1,5 +1,3 @@
-This is a starter template for a [Code Craft](https://codecraftpro.com/) course on developing mobile apps with the [Ionic Framework](http://ionicframework.com/).
-
 ## TvChat
 
 *This template does not work on its own*. It is missing the Ionic library, and AngularJS.
